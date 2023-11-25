@@ -1,0 +1,24 @@
+FROM ubuntu:20.10
+RUN sed -i 's/archive/old-releases/g' /etc/apt/sources.list
+RUN sed -i '/^deb.*security.ubuntu.com/s/^/#/' /etc/apt/sources.list
+
+RUN apt update	
+RUN apt install -y net-tools openssh-client openssh-server
+RUN apt install -y tshark
+
+
+RUN mkdir -p /run/sshd
+
+RUN useradd -m -s /bin/bash test && echo 'test:test' | chpasswd
+
+RUN groupadd -g 999 wireshark && usermod -aG wireshark test
+RUN chgrp wireshark /usr/bin/dumpcap && chmod o+x /usr/bin/dumpcap
+
+EXPOSE 22 8080	
+
+#CMD ["/usr/sbin/sshd", "-D"]
+
+#sudo docker cp 453dae91d26b:w4.pcapng .
+#0fb555d59bb3
+
+#sabemos que es el c4 el referente a la captura ya que el paquete cliente: key exchange tiene un tamaño de 1578
